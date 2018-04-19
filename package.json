@@ -1,0 +1,22 @@
+{
+  "name": "examnotify",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/silvanoneto/examnotify.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/silvanoneto/examnotify/issues"
+  },
+  "homepage": "https://github.com/silvanoneto/examnotify#readme",
+  "dependencies": {
+    "pkg": "^4.3.1"
+  }
+}
