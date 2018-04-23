@@ -14,9 +14,9 @@ nameserver.on('query', function(query){
 })
 
 nameserver.on('clientError', function(error) {
-  console.log("clientError: %s", error);
-});
+  console.log("clientError: %s", error)
+})
 
 nameserver.on('uncaughtException', function(error) {
-  console.log("exception: %s", error.message());
-});
+  console.log("exception: %s", error.message())
+})

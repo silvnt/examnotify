@@ -50,7 +50,7 @@ Server.prototype.listen = function listen(port, address, callback) {
 
         var self = this;
 
-        this._socket = dgram.createSocket('udp6');
+        this._socket = dgram.createSocket('udp4');
         this._socket.once('listening', function () {
                 self.emit('listening');
                 if (typeof (callback) === 'function')
@@ -71,7 +71,7 @@ Server.prototype.listen = function listen(port, address, callback) {
                 };
 
                 var src = {
-                        family: 'udp6',
+                        family: 'udp4',
                         address: rinfo.address,
                         port: rinfo.port
                 };
