@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/silvanoneto/examnotify#readme",
   "dependencies": {
+    "node-dig-dns": "^0.2.9",
     "pkg": "^4.3.1"
   }
 }
