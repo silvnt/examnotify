@@ -20,3 +20,4 @@ nameserver.on('clientError', function(error) {
 nameserver.on('uncaughtException', function(error) {
   console.log("exception: %s", error.message())
 })
+
