@@ -5,10 +5,13 @@ var ipserver = '127.0.0.1'
 nameserver.listen(4444, ipserver, function(){
   console.log('Nameserver started (' + ipserver + ':4444)')
 })
+//chegar alguem para registrar
 
 nameserver.on('query', function(query){
   var domain = query.name()
-  var record = new nameserver.ARecord(ipserver)
+  //fazendo registro de recurso
+  var record = new nameserver.ARecord(ipserver) // e mesmo ipserver?
+
   query.addAnswer(domain, record)
   query.respond()
 })

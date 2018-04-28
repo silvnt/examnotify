@@ -12,13 +12,13 @@ var ipServer = "";
 
 var client = dgram.createSocket('udp4');
 
-test('answer query: example.com (A)', function (t) {
+//test('answer query: example.com (A)', function (t) {
     dig('example.com', 'A', options, function (err, results) {
-            t.ifError(err);
-            ipServer = t.deepEqual(results.answers, [{
-                    name: 'example.com.',
-                    ttl: 5, type: 'A',
-                    target: '127.0.0.1'}]);
+           // t.ifError(err);
+            //ipServer = t.deepEqual(results.answers, [{
+                  //  name: 'example.com.',
+                  //  ttl: 5, type: 'A',
+                   // target: '127.0.0.1'}]);
 
             client.send(message, 0, message.length, PORT, ipServer.target, function(err, bytes) {
                 if (err) throw err;
@@ -27,7 +27,7 @@ test('answer query: example.com (A)', function (t) {
                     t.end(); 
                     });       
     });
-});
+//});
 
 
 /*   esperar a resposta do servidor
