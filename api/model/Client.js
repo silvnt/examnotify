@@ -6,7 +6,13 @@ var message = new Buffer('consultarExame get');
 
 var client = dgram.createSocket('udp4');
 client.send(message, 0, message.length, PORT, HOST, (err) => {
+  
+});
 
+client.on('message', function (message, info) {
+  
+  console.log('>>' + message + '<<')
+  console.log(info.address + ':' + info.port +' - ' + message);
 });
 
 client.on('listening', () => {
@@ -14,7 +20,4 @@ client.on('listening', () => {
   console.log(`server listening ${address.address}:${address.port}`);
 });
 
-client.on('message', function (message, info) {
-  console.log(info.address + ':' + info.port +' - ' + message);
-});
 
