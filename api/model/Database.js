@@ -8,3 +8,4 @@ const db = dgram.createSocket('udp4')
 db.send(registro, 0, registro.length, PORT, HOST, (err) => {
  db.close()
 });
+

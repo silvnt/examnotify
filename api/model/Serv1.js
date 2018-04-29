@@ -11,7 +11,7 @@ serv1.send(registro, 0, registro.length, PORT, HOST, (err) => {
 
 //pegar ip do banco de dados
 var datagrama = require('dgram');
-var mensagem = new Buffer('banco get');
+var mensagem = new Buffer('database get');
 
 var servidor1 = dgram.createSocket('udp4');
 servidor1.send(message, 0, message.length, PORT, HOST, (err) => {
