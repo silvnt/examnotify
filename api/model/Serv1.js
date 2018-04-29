@@ -9,3 +9,23 @@ serv1.send(registro, 0, registro.length, PORT, HOST, (err) => {
  serv1.close()
 });
 
+//pegar ip do banco de dados
+var datagrama = require('dgram');
+var mensagem = new Buffer('banco get');
+
+var servidor1 = dgram.createSocket('udp4');
+servidor1.send(message, 0, message.length, PORT, HOST, (err) => {
+  
+});
+
+servidor1.on('message', function (message, info) {
+  
+  console.log('>>' + message + '<<')
+  console.log(info.address + ':' + info.port +' - ' + message);
+});
+
+servidor1.on('listening', () => {
+  const address = servidor1.address();
+  console.log(`server listening ${address.address}:${address.port}`);
+});
+
