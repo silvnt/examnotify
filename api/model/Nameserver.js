@@ -33,9 +33,11 @@ server.on('message', (msg, rinfo) => {
     quarry.persistence.get_configuration(function(err, configuration){
       if(err)
           throw err;
-  
+      console.log(message)
       var record = configuration.records[message.slice(0, message.length-3)];
-      
+      console.log(record);
+      console.log(rinfo)
+      console.log(rinfo.port,rinfo.address,record.address[0])
       server.send(record.address[0], 0, record.length, rinfo.port, rinfo.address);
     });
   }
