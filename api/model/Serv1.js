@@ -11,7 +11,11 @@ serv1.send(registro, 0, registro.length, PORT, HOST, (err) => {
 
 net = require('net');
 
-var server = 
+var server = net.createServer();
+//depois tirar o predefinido
+server.listen(1234, '127.0.0.1');
+
+
 //pegar ip do banco de dados
 var datagrama = require('dgram');
 var mensagem = new Buffer('database get');

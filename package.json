@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/silvanoneto/examnotify#readme",
   "dependencies": {
+    "ip": "^1.1.5",
     "net": "^1.0.2",
     "node-dig-dns": "^0.2.9",
     "pkg": "^4.3.1"
