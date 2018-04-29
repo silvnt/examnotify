@@ -9,6 +9,9 @@ serv1.send(registro, 0, registro.length, PORT, HOST, (err) => {
  serv1.close()
 });
 
+net = require('net');
+
+var server = 
 //pegar ip do banco de dados
 var datagrama = require('dgram');
 var mensagem = new Buffer('database get');
@@ -28,4 +31,5 @@ servidor1.on('listening', () => {
   const address = servidor1.address();
   console.log(`server listening ${address.address}:${address.port}`);
 });
+//fim do pegar ip do banco de dados
 
