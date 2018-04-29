@@ -35,10 +35,8 @@ server.on('message', (msg, rinfo) => {
           throw err;
   
       var record = configuration.records[message.slice(0, message.length-3)];
-      console.log(record)
       
-      // como dou parse em record pra enviar somente o ip da mensagem?
-      //server.send(JSON.parse(record), 0, record.length, rinfo.port, rinfo.address);
+      server.send(record.address[0], 0, record.length, rinfo.port, rinfo.address);
     });
   }
   
