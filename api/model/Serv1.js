@@ -6,57 +6,57 @@ const dgram = require('dgram')
 const registro = new Buffer('consultarExame set')
 const serv1 = dgram.createSocket('udp4')
 serv1.send(registro, 0, registro.length, PORT, HOST, (err) => {
- serv1.close()
+    serv1.close()
 });
 
 net = require('net');
 
-var server= net.createServer(function(cliente) {
+var server = net.createServer(function (cliente) {
 
-    cliente.on('data', function(data) {
-        
-    //pegar ip do banco de dados
-var datagrama = require('dgram');
-var mensagem = new Buffer('database get');
+    cliente.on('data', function (data) {
 
-var servidor1 = dgram.createSocket('udp4');
-servidor1.send(message, 0, message.length, PORT, HOST, (err) => {
-  
-});
+        //pegar ip do banco de dados
+        var datagrama = require('dgram');
+        var mensagem = new Buffer('database get');
 
-servidor1.on('message', function (message, info) {
-  
-  console.log('>>' + message + '<<')
-  console.log(info.address + ':' + info.port +' - ' + message);
-});
+        var servidor1 = dgram.createSocket('udp4');
+        servidor1.send(mensagem, 0, mensagem.length, PORT, HOST, (err) => {
 
-servidor1.on('listening', () => {
-  const address = servidor1.address();
-  console.log(`server listening ${address.address}:${address.port}`);
-});
-//fim do pegar ip do banco de dados
+        });
 
-//agora vou criar uma conexao tcp com o banco pra enviar o q o cliente me passou
+        servidor1.on('message', function (message, info) {
 
-var conexao = require('net');
+            console.log('>>' + message + '<<')
+            console.log(info.address + ':' + info.port + ' - ' + message);
+        });
 
-var serv = new conexao.Socket();
-//porta do db e ip dele
-serv.connect(address.port, address.address, function() {
+        servidor1.on('listening', () => {
+            const address = servidor1.address();
+            console.log(`server listening ${address.address}:${address.port}`);
+        });
+        //fim do pegar ip do banco de dados
 
-    
-	console.log('Connected');
-	server.write(cliente.data);
-});
+        //agora vou criar uma conexao tcp com o banco pra enviar o q o cliente me passou
 
-serv.on('data', function(data) {
-    console.log('Received: ' + data);
-    server.send(data);
-    cliente.destroy();
-	serv.destroy(); // kill client after server's response
-});
-        
-        
+        var conexao = require('net');
+
+        var serv = new conexao.Socket();
+        //porta do db e ip dele
+        serv.connect(address.port, address.address, function () {
+
+
+            console.log('Connected');
+            server.write(cliente.data);
+        });
+
+        serv.on('data', function (data) {
+            console.log('Received: ' + data);
+            server.send(data);
+            cliente.destroy();
+            serv.destroy(); // kill client after server's response
+        });
+
+
     });
 
 })
