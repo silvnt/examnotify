@@ -40,17 +40,22 @@ var server = net.createServer(function (serverclient) {
   serverclient.on('data', function (data) {
     dado = data.toString()
     console.log(data)
+
+    let flag = false
+
     database.map(function (item, index) {
       if (item.id === dado) {
         console.log('dado encontrado... a enviar')
         serverclient.write(item.status)
         serverclient.destroy()
+        flag = true
       }
     })
 
-    serverclient.write('id inválido')
-    serverclient.destroy()
-
+    if (flag === false){
+      serverclient.write('nao encontrado')
+      serverclient.destroy()
+    }
   })
 })
 
