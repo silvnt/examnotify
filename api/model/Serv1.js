@@ -1,4 +1,4 @@
-var PORT = 1234;
+var PORT = 4321;
 var HOST = '127.0.0.1'
 
 // registro do server
@@ -22,12 +22,6 @@ var server = net.createServer(function (cliente) {
         var servidor1 = dgram.createSocket('udp4');
         servidor1.send(mensagem, 0, mensagem.length, PORT, HOST, (err) => {
 
-        });
-
-        servidor1.on('message', function (message, info) {
-
-            console.log('>>' + message + '<<')
-            console.log(info.address + ':' + info.port + ' - ' + message);
         });
 
         servidor1.on('listening', () => {
@@ -64,7 +58,7 @@ var server = net.createServer(function (cliente) {
 
 
 //depois tirar o predefinido
-server.listen(1234, '127.0.0.1');
+server.listen(PORT, HOST);
 
 
 

@@ -45,6 +45,11 @@ server.on('message', (msg, rinfo) => {
 
       server.send(a, 0, record.address[0].length, rinfo.port,rinfo.address);
     });
+  }else if(message.includes('rmv')){
+    quarry.persistence.delete_record(message.slice(0, message.length-3), function(err){
+      if(err)
+          throw err;
+    });
   }
   
 });
