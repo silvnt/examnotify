@@ -3,7 +3,8 @@ var table = []
 
 // udp4 server
 const PORT = 1234
-var HOST = '127.0.0.1'
+var ip = require('ip');
+var HOST = ip.address();
 const dgram = require('dgram');
 const server = dgram.createSocket('udp4');
 
@@ -15,24 +16,24 @@ server.on('error', (err) => {
 server.on('message', (msg, rinfo) => {
   var message = msg.toString()
 
-  if(message.includes('set')){
+  if (message.includes('set')) {
     table.push(
       {
-        name : message.slice(0, message.length-4),
-        ip : rinfo.address,
-        port : rinfo.port,
-        type : 'A',
+        name: message.slice(0, message.length - 4),
+        ip: rinfo.address,
+        port: rinfo.port,
+        type: 'A',
       }
     )
 
     console.log(table)
 
-  }else if(message.includes('get')){
+  } else if (message.includes('get')) {
 
     console.log('tabela antes de tirar a informação:' + table + '>>' + table[0].ip)
 
-    var res = table.filter(function(reg){
-      return reg.name == message.slice(0, message.length-4)
+    var res = table.filter(function (reg) {
+      return reg.name == message.slice(0, message.length - 4)
     })
 
     console.log('res:::' + res)
@@ -42,13 +43,13 @@ server.on('message', (msg, rinfo) => {
 
     console.log(choosed)
     var msg = choosed.ip + ' ' + choosed.port
-    server.send(msg, 0, msg.length, rinfo.port,rinfo.address);
-    
+    server.send(msg, 0, msg.length, rinfo.port, rinfo.address);
 
-  }else if(message.includes('rmv')){
+
+  } else if (message.includes('rmv')) {
 
   }
-  
+
 });
 
 server.on('listening', () => {
@@ -56,4 +57,4 @@ server.on('listening', () => {
   console.log(`server listening ${address.address}:${address.port}`);
 });
 
-server.bind(PORT,HOST);
+server.bind(PORT, HOST);
