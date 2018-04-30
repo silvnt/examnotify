@@ -43,6 +43,8 @@ var conexao = require('net');
 var serv = new conexao.Socket();
 //porta do db e ip dele
 serv.connect(address.port, address.address, function() {
+
+    
 	console.log('Connected');
 	server.write(cliente.data);
 });
