@@ -24,7 +24,7 @@ server.on('message', (msg, rinfo) => {
   var message = msg.toString()
 
   if(message.includes('set')){
-    quarry.persistence.create_record(message.slice(0, message.length-3), { address: rinfo.address, type: "A", ttl: 60 }, function(err){
+    quarry.persistence.create_record(message.slice(0, message.length-4), { address: rinfo.address, type: "A", ttl: 60 }, function(err){
       if(err)
           throw err;
     });
@@ -34,19 +34,21 @@ server.on('message', (msg, rinfo) => {
       if(err)
           throw err;
 
-      console.log(message) 
-      var record = configuration.records[message.slice(0, message.length-3)];
-      console.log(record);
-      console.log("desgraça:" + record.address[0])
-      console.log(rinfo)
-      console.log(rinfo.port,rinfo.address,record.address[0])
-      console.log(record.address[0])
+      console.log(configuration.records[message.slice(0, message.length-4)])
+
+      var record = configuration.records[message.slice(0, message.length-4)]
+      
+      //console.log(record);
+      //console.log("desgraça:" + record.address[0])
+     // console.log(rinfo)
+      //console.log(rinfo.port,rinfo.address,record.address[0])
+      //console.log(record.address[0])
       var a = record.address[0].toString()
 
       server.send(a, 0, record.address[0].length, rinfo.port,rinfo.address);
     });
   }else if(message.includes('rmv')){
-    quarry.persistence.delete_record(message.slice(0, message.length-3), function(err){
+    quarry.persistence.delete_record(message.slice(0, message.length-4), function(err){
       if(err)
           throw err;
     });
