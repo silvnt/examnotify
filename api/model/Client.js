@@ -7,7 +7,7 @@ var net = require('net');
 var idExame = '2';
 
 
-var client = new net.Socket();
+var tcpClient = new net.Socket();
 var client = dgram.createSocket('udp4');
 client.send(message, 0, message.length, PORT, HOST, (err) => {
   console.log('mensagem enviada ao Nameserver!!')
@@ -18,10 +18,10 @@ client.on('message', function (message, info) {
   console.log('>>' + message + '<<')
   console.log(info.address + ':' + info.port +' - ' + message);
 
-    client.connect(4321, message, function() {
+    tcpClient.connect(4321, message, function() {
       console.log('Conectado!!');
-      client.write(idExame);
-        client.on('data', function(data) {
+      tcpClient.write(idExame);
+        tcpClient.on('data', function(data) {
           console.log('Status do Seu Exame: ' + data);
           //client.destroy();
         });
