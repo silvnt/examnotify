@@ -3,6 +3,7 @@ var table = []
 
 // udp4 server
 const PORT = 1234
+var HOST = '127.0.0.1'
 const dgram = require('dgram');
 const server = dgram.createSocket('udp4');
 
@@ -28,9 +29,13 @@ server.on('message', (msg, rinfo) => {
 
   }else if(message.includes('get')){
 
+    console.log('tabela antes de tirar a informação:' + table + '>>' + table[0].ip)
+
     var res = table.filter(function(reg){
       return reg.name == message.slice(0, message.length-4)
     })
+
+    console.log('res:::' + res)
 
     var n = Math.floor((Math.random() * res.length));
     var choosed = res[n]
@@ -51,4 +56,4 @@ server.on('listening', () => {
   console.log(`server listening ${address.address}:${address.port}`);
 });
 
-server.bind(PORT);
+server.bind(PORT,HOST);

@@ -24,9 +24,10 @@ var database = [
 
 var server = net.createServer(function(serverclient){
   serverclient.on('data', function(data){
+    dado = data.toString()
     console.log(data)
     database.map(function(item, index){
-      if(item.id === data){
+      if(item.id === dado){
         console.log('dado encontrado... a enviar')
         serverclient.send(item.status)
         serverclient.destroy()

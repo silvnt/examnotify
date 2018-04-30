@@ -17,8 +17,8 @@ client.send(message, 0, message.length, 1234, HOST, (err) => {
 client.on('message', function (message, info) {
 
     var address = message.toString().split(" ");
-
-    tcpClient.connect(address[1], address[0], message, function() {
+    console.log('mensagem do nameserver: ' + address)
+    tcpClient.connect(4321, address[0], message, function() {
       console.log('Conectado!!');
       tcpClient.write(idExame);
         tcpClient.on('data', function(data) {
