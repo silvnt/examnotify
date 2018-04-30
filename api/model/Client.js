@@ -1,4 +1,4 @@
-var PORT = 1234;
+
 var HOST = '127.0.0.1';
 
 var dgram = require('dgram');
@@ -8,17 +8,17 @@ var idExame = '2';
 
 
 var tcpClient = new net.Socket();
+
 var client = dgram.createSocket('udp4');
-client.send(message, 0, message.length, PORT, HOST, (err) => {
+client.send(message, 0, message.length, 1234, HOST, (err) => {
   console.log('mensagem enviada ao Nameserver!!')
 });
 
 client.on('message', function (message, info) {
-  
-  console.log('>>' + message + '<<')
-  console.log(info.address + ':' + info.port +' - ' + message);
 
-    tcpClient.connect(4321, message, function() {
+    var address = message.toString().split(" ");
+
+    tcpClient.connect(address[1], address[0], message, function() {
       console.log('Conectado!!');
       tcpClient.write(idExame);
         tcpClient.on('data', function(data) {
@@ -27,10 +27,3 @@ client.on('message', function (message, info) {
         });
     });
 });
-
-client.on('listening', () => {
-  const address = client.address();
-  console.log(`server listening ${address.address}:${address.port}`);
-});
-
-
