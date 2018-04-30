@@ -11,12 +11,11 @@ serv1.send(registro, 0, registro.length, PORT, HOST, (err) => {
 
 net = require('net');
 
-var server = net.createServer();
-//depois tirar o predefinido
-server.listen(1234, '127.0.0.1');
+var server= net.createServer(function(cliente) {
 
-
-//pegar ip do banco de dados
+    cliente.on('data', function(data) {
+        
+    //pegar ip do banco de dados
 var datagrama = require('dgram');
 var mensagem = new Buffer('database get');
 
@@ -36,4 +35,35 @@ servidor1.on('listening', () => {
   console.log(`server listening ${address.address}:${address.port}`);
 });
 //fim do pegar ip do banco de dados
+
+//agora vou criar uma conexao tcp com o banco pra enviar o q o cliente me passou
+
+var conexao = require('net');
+
+var serv = new conexao.Socket();
+//porta do db e ip dele
+serv.connect(1234, address, function() {
+	console.log('Connected');
+	server.write(cliente.data);
+});
+
+serv.on('data', function(data) {
+    console.log('Received: ' + data);
+    server.send(data);
+    cliente.destroy();
+	serv.destroy(); // kill client after server's response
+});
+        
+        
+    });
+
+})
+
+
+
+//depois tirar o predefinido
+server.listen(1234, '127.0.0.1');
+
+
+
 
