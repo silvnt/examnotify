@@ -1,33 +1,34 @@
-var ip = require('ip');
-var HOST = ip.address();
+let ip = require('ip')
+let dgram = require('dgram')
+let net = require('net')
 
-console.log('Meu ip é ' + HOST)
+const HOST = ip.address()
 
-var dgram = require('dgram');
-var message = new Buffer('consultarExame get');
-var net = require('net');
-var idExame = '2';
+let message = new Buffer('consultarExame get')
+let idExame = '2'
 
+// pegar endereco de server em nameserver
+let client = dgram.createSocket('udp4')
+client.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+  if (err) {
+    console.log('trollou consulta de endereco em nameserver')
+  }
+})
 
+// quando receber endereco
+client.on('message', (message, info) => {
+  let address = message.toString().split(" ")
 
+  // consultar em server
+  let tcpClient = new net.Socket()
+  tcpClient.connect(address[1], address[0], message, () => {
+    tcpClient.write(idExame)
 
-var client = dgram.createSocket('udp4');
-client.send(message, 0, message.length, 1234, '10.1.2.61', (err) => {
-  console.log('mensagem enviada ao Nameserver!!')
-});
-
-var tcpClient = new net.Socket();
-
-client.on('message', function (message, info) {
-
-  var address = message.toString().split(" ");
-  console.log('mensagem do nameserver: ' + address)
-  tcpClient.connect(address[1], address[0], message, function () {
-    console.log('Conectado!!');
-    tcpClient.write(idExame);
-    tcpClient.on('data', function (data) {
-      console.log('Status do Seu Exame: ' + data);
-      //client.destroy();
-    });
-  });
-});
+    // ao receber resposta de server
+    tcpClient.on('data', (data) => {
+      console.log('Status do Seu Exame: ' + data)
+      tcpClient.destroy()
+      client.close()
+    })
+  })
+})

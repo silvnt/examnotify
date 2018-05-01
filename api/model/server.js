@@ -1,80 +1,87 @@
-var PORT = 4321;
-var ip = require('ip');
-var HOST = ip.address();
+let ip = require('ip')
+let net = require('net')
+let dgram = require('dgram')
 
-console.log('Meu ip é ' + HOST)
+const PORT = 4321
+const HOST = ip.address()
 
-// registro do server
-const dgram = require('dgram')
-const registro = new Buffer('consultarExame set')
-const serv1 = dgram.createSocket('udp4')
+let message
 
+// server register
+message = new Buffer('consultarExame set')
+let serv1 = dgram.createSocket('udp4')
 serv1.bind(PORT, HOST)
 
-serv1.send(registro, 0, registro.length, 1234, '10.1.2.61', (err) => {
+serv1.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
     if (err) {
-        console.log('trollou')
+        console.log('trollou no registro em nameserver')
     }
-});
+    serv1.close()
+})
 
-net = require('net');
+// tcp server
+let server = net.createServer((cliente) => {
 
-var server = net.createServer(function (cliente) {
+    // pegar endereco de dataserver em nameserver (udp4)
+    serv1 = dgram.createSocket('udp4')
+    serv1.bind(PORT, HOST)
 
-    address = server.address();
-    console.log(`server listening ${address.address}:${address.port}`);
+    message = new Buffer('database get')
+    serv1.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+        if (err) {
+            console.log('trollou ao requisitar endereco de dataserver em nameserver')
+        }
+    })
 
+    
+    // ao receber endereco de dataserver
+    serv1.on('message', (message, info) => {
 
-    //pegar ip do banco de dados
-    var datagrama = require('dgram');
-    var message = new Buffer('database get');
+        let address = message.toString().split(" ")
+        serv1.close()
+        
+        let serv = new net.Socket()
 
+        // acessar banco de dados
+        serv.connect(address[1], address[0], () => {
+            cliente.on('data', (data) => {
+                serv.write(data)
 
-    serv1.send(message, 0, message.length, 1234, '10.1.2.61', (err) => {
+                // repassar mensagem do bd para o cliente
+                serv.on('data', (data) => {
+                    cliente.write(data)
+                    serv.destroy()
+                    cliente.destroy()
+                    console.log('Cliente atendido com sucesso')
+                })
+            })
+        })
 
-    });
+    })
+})
 
-    var conexao = require('net');
+server.on('listening', () => {
+    const address = server.address()
+    console.log(`server listening ${address.address}:${address.port}`)
+})
 
-    var serv = new conexao.Socket();
+server.on('close', () => {
+    serv1 = dgram.createSocket('udp4')
+    serv1.bind(PORT, HOST)
 
-    serv1.on('message', function (message, info) {
+    message = new Buffer('rmv')
+    serv1.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+        if (err) {
+            console.log('trollou ao remover endereco em nameserver')
+        }
 
-        console.log('>>' + message + '<<')
-        console.log(info.address + ':' + info.port + ' - ' + message);
+        serv1.close()
+        console.log('Server finalizado com sucesso.')
+    })
+})
 
-        var address = message.toString().split(" ");
+process.on('SIGINT', () => {
+    server.close()
+})
 
-        serv.connect(address[1], address[0], function () {
-            console.log('Connected');
-            cliente.on('data', function (data) {
-                console.log(data)
-                serv.write(data);
-                serv.on('data', function (data) {
-                    console.log('Received: ' + data);
-                    cliente.write(data);
-                    cliente.destroy();
-                    serv.destroy(); // kill client after server's response
-                });
-            });
-        });
-
-
-        serv1.on('listening', () => {
-            address = servidor1.address();
-            console.log(`server listening ${address.address}:${address.port}`);
-        });
-
-        //fim do pegar ip do banco de dados
-
-        //agora vou criar uma conexao tcp com o banco pra enviar o q o cliente me passou
-
-        //porta do db e ip dele
-
-    });
-});
-
-
-
-//depois tirar o predefinido
-server.listen(PORT, HOST);
+server.listen(PORT, HOST)

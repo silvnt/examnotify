@@ -1,29 +1,12 @@
-var PORT = 8765;
-var ip = require('ip');
-var HOST = ip.address();
+let ip = require('ip')
+let dgram = require('dgram')
+let net = require('net')
 
-console.log('Meu ip é ' + HOST)
+const PORT = 8765
+const HOST = ip.address()
 
-// registro do database
-const dgram = require('dgram')
-const registro = new Buffer('database set')
-const db = dgram.createSocket('udp4')
-db.bind(PORT, HOST)
-db.send(registro, 0, registro.length, 1234, '10.1.2.61', (err) => {
-  if (err) {
-    console.log('trollou')
-  }
-
-  console.log('dataserver registrado!')
-  db.close()
-});
-
-
-
-// dataserver
-net = require('net')
-
-var database = [
+// database table
+let database = [
   { id: '1', status: 'pronto' },
   { id: '2', status: 'em andamento' },
   { id: '3', status: 'não pronto' },
@@ -32,21 +15,29 @@ var database = [
   { id: '6', status: 'não pronto' },
 ]
 
-var server = net.createServer(function (serverclient) {
+// registro do database em nameserver
+let message = new Buffer('database set')
+let db = dgram.createSocket('udp4')
+db.bind(PORT, HOST)
+db.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+  if (err) {
+    console.log('trollou registro de endereco em nameserver')
+  }
+  db.close()
+})
 
-  address = serverclient.address();
-  console.log(`server listening ${address.address}:${address.port}`);
+// tcp server
+let server = net.createServer((serverclient) => {
 
-  serverclient.on('data', function (data) {
+  serverclient.on('data', (data) => {
     dado = data.toString()
-    console.log(data)
 
     let flag = false
 
-    database.map(function (item, index) {
+    database.map((item, index) => {
       if (item.id === dado) {
-        console.log('dado encontrado... a enviar')
         serverclient.write(item.status)
+        console.log('dado encontrado... enviada para ' + serverclient.remoteAddress)
         serverclient.destroy()
         flag = true
       }
@@ -54,9 +45,33 @@ var server = net.createServer(function (serverclient) {
 
     if (flag === false){
       serverclient.write('nao encontrado')
+      console.log('dado nao encontrado... enviada resposta para ' + serverclient.remoteAddress)
       serverclient.destroy()
     }
   })
 })
 
-server.listen(PORT, HOST);
+server.on('listening', () => {
+  const address = server.address()
+  console.log(`server listening ${address.address}:${address.port}`)
+})
+
+server.on('close', () => {
+  message = new Buffer('rmv')
+  db = dgram.createSocket('udp4')
+  db.bind(PORT, HOST)
+  db.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+      if (err) {
+          console.log('trollou ao remover endereco em nameserver')
+      }
+
+      db.close()
+      console.log('Dataserver finalizado com sucesso.')
+  })
+})
+
+process.on('SIGINT', () => {
+  server.close()
+})
+
+server.listen(PORT, HOST)

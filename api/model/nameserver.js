@@ -1,20 +1,23 @@
+let ip = require('ip')
+let dgram = require('dgram')
+
+const PORT = 1234
+const HOST = ip.address()
+
 // dns table
-var table = []
+let table = []
 
 // udp4 server
-const PORT = 1234
-var ip = require('ip');
-var HOST = ip.address();
-const dgram = require('dgram');
-const server = dgram.createSocket('udp4');
+
+let server = dgram.createSocket('udp4')
 
 server.on('error', (err) => {
-  console.log(`server error:\n${err.stack}`);
-  server.close();
-});
+  console.log(`server error:\n${err.stack}`)
+  server.close()
+})
 
 server.on('message', (msg, rinfo) => {
-  var message = msg.toString()
+  let message = msg.toString()
 
   if (message.includes('set')) {
     table.push(
@@ -26,35 +29,41 @@ server.on('message', (msg, rinfo) => {
       }
     )
 
-    console.log(table)
+    console.log(rinfo.address + ':' + rinfo.port + ' registred')
 
   } else if (message.includes('get')) {
 
-    console.log('tabela antes de tirar a informação:' + table + '>>' + table[0].ip)
-
-    var res = table.filter(function (reg) {
+    let res = table.filter((reg) => {
       return reg.name == message.slice(0, message.length - 4)
     })
 
-    console.log('res:::' + res)
+    let n = Math.floor((Math.random() * res.length))
+    let choosed = res[n]
 
-    var n = Math.floor((Math.random() * res.length));
-    var choosed = res[n]
+    let msg = choosed.ip + ' ' + choosed.port
+    server.send(msg, 0, msg.length, rinfo.port, rinfo.address)
 
-    console.log(choosed)
-    var msg = choosed.ip + ' ' + choosed.port
-    server.send(msg, 0, msg.length, rinfo.port, rinfo.address);
-
+    console.log(choosed.ip + ':' + choosed.port + ' acessed by ' + rinfo.address + ':' + rinfo.port)
 
   } else if (message.includes('rmv')) {
 
+    let index = table.findIndex((item) => {
+      return item.ip === rinfo.address
+    })
+
+    table.splice(index, 1)
+    
+    console.log(rinfo.address + ':' + rinfo.port + ' removed')
+
+  } else {
+    console.log('operacao desconhecida -> ' + message + ' (de ' + rinfo.address + ')')
   }
 
-});
+})
 
 server.on('listening', () => {
-  const address = server.address();
-  console.log(`server listening ${address.address}:${address.port}`);
-});
+  const address = server.address()
+  console.log(`server listening ${address.address}:${address.port}`)
+})
 
-server.bind(PORT, HOST);
+server.bind(PORT, HOST)
