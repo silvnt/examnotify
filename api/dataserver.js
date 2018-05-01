@@ -5,6 +5,8 @@ let net = require('net')
 const PORT = 8765
 const HOST = ip.address()
 
+const DNSHOST = '192.168.15.13'
+
 // database table
 let database = [
   { id: '1', status: 'pronto' },
@@ -19,7 +21,7 @@ let database = [
 let message = new Buffer('database set')
 let db = dgram.createSocket('udp4')
 db.bind(PORT, HOST)
-db.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+db.send(message, 0, message.length, 1234, DNSHOST, (err) => {
   if (err) {
     console.log('trollou registro de endereco em nameserver')
   }
@@ -37,7 +39,7 @@ let server = net.createServer((serverclient) => {
     database.map((item, index) => {
       if (item.id === dado) {
         serverclient.write(item.status)
-        console.log('dado encontrado... enviada para ' + serverclient.remoteAddress)
+        console.log('dado encontrado... enviado para ' + serverclient.remoteAddress)
         serverclient.destroy()
         flag = true
       }
@@ -60,7 +62,7 @@ server.on('close', () => {
   message = new Buffer('rmv')
   db = dgram.createSocket('udp4')
   db.bind(PORT, HOST)
-  db.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+  db.send(message, 0, message.length, 1234, DNSHOST, (err) => {
       if (err) {
           console.log('trollou ao remover endereco em nameserver')
       }

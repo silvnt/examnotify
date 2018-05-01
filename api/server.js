@@ -5,6 +5,8 @@ let dgram = require('dgram')
 const PORT = 4321
 const HOST = ip.address()
 
+const DNSHOST = '192.168.15.13'
+
 let message
 
 // server register
@@ -12,10 +14,11 @@ message = new Buffer('consultarExame set')
 let serv1 = dgram.createSocket('udp4')
 serv1.bind(PORT, HOST)
 
-serv1.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+serv1.send(message, 0, message.length, 1234, DNSHOST, (err) => {
     if (err) {
         console.log('trollou no registro em nameserver')
     }
+    
     serv1.close()
 })
 
@@ -27,7 +30,7 @@ let server = net.createServer((cliente) => {
     serv1.bind(PORT, HOST)
 
     message = new Buffer('database get')
-    serv1.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+    serv1.send(message, 0, message.length, 1234, DNSHOST, (err) => {
         if (err) {
             console.log('trollou ao requisitar endereco de dataserver em nameserver')
         }
@@ -70,7 +73,7 @@ server.on('close', () => {
     serv1.bind(PORT, HOST)
 
     message = new Buffer('rmv')
-    serv1.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+    serv1.send(message, 0, message.length, 1234, DNSHOST, (err) => {
         if (err) {
             console.log('trollou ao remover endereco em nameserver')
         }

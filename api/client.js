@@ -1,15 +1,18 @@
 let ip = require('ip')
 let dgram = require('dgram')
 let net = require('net')
+let os = require('os')
+
+let idExame = process.argv[2]
 
 const HOST = ip.address()
+const DNSHOST = '192.168.15.13'
 
 let message = new Buffer('consultarExame get')
-let idExame = '2'
 
 // pegar endereco de server em nameserver
 let client = dgram.createSocket('udp4')
-client.send(message, 0, message.length, 1234, '192.168.15.13', (err) => {
+client.send(message, 0, message.length, 1234, DNSHOST, (err) => {
   if (err) {
     console.log('trollou consulta de endereco em nameserver')
   }
