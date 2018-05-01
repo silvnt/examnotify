@@ -5,6 +5,11 @@ let os = require('os')
 
 let idExame = process.argv[2]
 
+if (!idExame){
+  console.log('node client.js id_exame')
+  return -1
+}
+
 const HOST = ip.address()
 const DNSHOST = '192.168.15.13'
 

@@ -31,12 +31,12 @@ db.send(message, 0, message.length, 1234, DNSHOST, (err) => {
 // tcp server
 let server = net.createServer((serverclient) => {
 
-  serverclient.on('data', (data) => {
+  serverclient.on('data', async (data) => {
     dado = data.toString()
 
     let flag = false
 
-    database.map((item, index) => {
+    await database.map((item, index) => {
       if (item.id === dado) {
         serverclient.write(item.status)
         console.log('dado encontrado... enviado para ' + serverclient.remoteAddress)

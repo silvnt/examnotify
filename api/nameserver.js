@@ -16,11 +16,12 @@ server.on('error', (err) => {
   server.close()
 })
 
-server.on('message', (msg, rinfo) => {
+
+server.on('message', async (msg, rinfo) => {
   let message = msg.toString()
 
   if (message.includes('set')) {
-    table.push(
+    await table.push(
       {
         name: message.slice(0, message.length - 4),
         ip: rinfo.address,
@@ -33,7 +34,7 @@ server.on('message', (msg, rinfo) => {
 
   } else if (message.includes('get')) {
 
-    let res = table.filter((reg) => {
+    let res = await table.filter((reg) => {
       return reg.name == message.slice(0, message.length - 4)
     })
 
@@ -51,7 +52,7 @@ server.on('message', (msg, rinfo) => {
       return item.ip === rinfo.address
     })
 
-    table.splice(index, 1)
+    await table.splice(index, 1)
     
     console.log(rinfo.address + ':' + rinfo.port + ' removed')
 
